@@ -9,12 +9,12 @@ export class UserService {
     constructor(@InjectRepository(UserEntity) private userRep: Repository<UserEntity>) {}
 
     async showAll(): Promise<UserRO[]> {
-        const users = await this.userRep.find({});
+        const users = await this.userRep.find({relations: ['bookmark']});
         return users.map(user => user.responseObject(false));
     }
 
     async read(username: string): Promise<UserRO> {
-      const user = await this.userRep.findOne({where: {username}});
+      const user = await this.userRep.findOne({where: {username}, relations: ['bookmark']});
       if (!user) {
           throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
       }

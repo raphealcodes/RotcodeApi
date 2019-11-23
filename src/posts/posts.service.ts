@@ -62,4 +62,29 @@ export class PostsService {
         await this.postRep.delete({id});
         return this.postResponseObject(post);
     }
+
+    async setBookmark(id: string, userId: string) {
+        const post = await this.postRep.findOne({where: {id}});
+        const user = await this.userRep.findOne({where: {id: userId}, relations: ['bookmark']});
+
+        if (user.bookmark.filter(bookmarks => bookmarks.id === post.id).length < 1) {
+            user.bookmark.push(post);
+            await  this.userRep.save(user);
+        } else {
+            throw new HttpException('Already Bookmark', HttpStatus.BAD_REQUEST);
+        }
+        return user.responseObject();
+    }
+
+    async unBookmark(id: string, userId: string) {
+        const post = await this.postRep.findOne({where: {id}});
+        const user = await this.userRep.findOne({where: {id: userId}});
+
+        if (user.bookmark.filter(bookmarks => bookmarks.id === post.id).length > 0) {
+            user.bookmark = user.bookmark.filter(bookmarks => bookmarks.id !== post.id);
+            await this.userRep.save(user);
+        } else {
+            throw new HttpException('Cannot Bookmark', HttpStatus.BAD_REQUEST); }
+        return user.responseObject();
+}
 }

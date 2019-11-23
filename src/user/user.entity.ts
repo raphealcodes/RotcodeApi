@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToMany } from 'typeorm';
 import { PostsEntity } from '../posts/posts.entity';
 
 @Entity('user')
@@ -25,6 +25,10 @@ export class UserEntity {
 
     @Column('text') city: string;
 
+    @ManyToMany(type => PostsEntity, {cascade: true})
+    @JoinTable()
+    bookmark: PostsEntity[];
+
     @OneToMany(type => PostsEntity, posts => posts.author)
     posts: PostsEntity[];
 
@@ -47,6 +51,9 @@ export class UserEntity {
         const toResponseObject: any = { id, username, created };
         if (showToken) {
             toResponseObject.token = token;
+        }
+        if (this.bookmark) {
+            toResponseObject.bookmark = this.bookmark;
         }
         return toResponseObject;
     }

@@ -39,4 +39,16 @@ export class PostsController {
         return this.postservice.delete(id, user);
     }
 
+    @Post(':id/bookmarks')
+    @UseGuards(new AuthGuard())
+    bookmark(@Param('id') id: string, @User('id') user) {
+return this.postservice.setBookmark(id, user);
+    }
+
+    @Delete(':id/bookmarks')
+    @UseGuards(new AuthGuard())
+    unbookmark(@Param('id') id: string, @User('id') user) {
+return this.postservice.unBookmark(id, user);
+    }
+
 }
