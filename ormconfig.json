@@ -1,0 +1,12 @@
+{
+"host": "localhost",
+"port": "5432",
+"type": "postgres",
+"password": "november29",
+"username": "postgres",
+"database": "rotcodedb",
+"logging": true,
+"synchronize": true,
+"entities": ["./src/**/*.entity.ts", "./dis/**/*.entity.js" ]
+
+}
